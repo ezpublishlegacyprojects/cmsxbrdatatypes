@@ -9,7 +9,12 @@
     <message>
         <source>Brazilian state</source>
         <comment>Datatype name</comment>
-        <translation>Estado brasileiro</translation>
+        <translation>Estado BR</translation>
+    </message>
+    <message>
+        <source>Brazilian Phone</source>
+        <comment>Datatype name</comment>
+        <translation>Telefone BR</translation>
     </message>
 </context>
 <context>
@@ -130,6 +135,36 @@
     <message>
         <source>Not show state names</source>
         <translation>Não exibir nomes dos estados</translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation>Opções</translation>
+    </message>
+</context>
+<context>
+    <name>extension/brdatatypes/brphone/content/datatype</name>
+    <message>
+        <source>Phone number is mandatory</source>
+        <translation>O telefone é obrigatório</translation>
+    </message>
+    <message>
+        <source>Area number is mandatory</source>
+        <translation>Informe o DDD</translation>
+    </message>
+    <message>
+        <source>Invalid phone number</source>
+        <translation>Telefone inválido</translation>
+    </message>
+</context>
+<context>
+    <name>extension/brdatatypes/brphone/class/datatype</name>
+    <message>
+        <source>Force a area number</source>
+        <translation>DDD obrigatório</translation>
+    </message>
+    <message>
+        <source>Not force a area number</source>
+        <translation>DDD não obrigatório</translation>
     </message>
     <message>
         <source>Options</source>

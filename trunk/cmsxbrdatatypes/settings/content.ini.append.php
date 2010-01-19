@@ -4,5 +4,6 @@
 ExtensionDirectories[]=cmsxbrdatatypes
 AvailableDataTypes[]=cmsxcpfcnpj
 AvailableDataTypes[]=cmsxbrstate
+AvailableDataTypes[]=cmsxbrphone
 
 */ ?>
