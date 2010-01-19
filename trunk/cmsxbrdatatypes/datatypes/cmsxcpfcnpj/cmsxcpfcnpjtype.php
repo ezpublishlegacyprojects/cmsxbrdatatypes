@@ -225,12 +225,18 @@ class cmsxCpfCnpjType extends eZDataType
              $http->hasPostVariable( $base . '_cpfcnpj_default_' . $classAttributeID ) )
         {
             $allow = $http->postVariable( $base . '_cpfcnpj_allow_' . $classAttributeID );
-			$cpfUnique = $http->postVariable( $base . '_cpfcnpj_cpf_unique_' . $classAttributeID );
-			$cnpjUnique = $http->postVariable( $base . '_cpfcnpj_cnpj_unique_' . $classAttributeID );
+			$cpfUnique = 0;
+			if ( $http->hasPostVariable( $base . '_cpfcnpj_cpf_unique_' . $classAttributeID ) )
+			{
+				$cpfUnique = $http->postVariable( $base . '_cpfcnpj_cpf_unique_' . $classAttributeID );
+			}
+			$cnpjUnique = 0;
+        	if ( $http->hasPostVariable( $base . '_cpfcnpj_cnpj_unique_' . $classAttributeID ) )
+			{
+				$cnpjUnique = $http->postVariable( $base . '_cpfcnpj_cnpj_unique_' . $classAttributeID );
+			}
+			
 			$default = $http->postVariable( $base . '_cpfcnpj_default_' . $classAttributeID );
-			// correct nulled values
-			$cpfUnique = ( $cpfUnique == null ) ? 0 : $cpfUnique;
-			$cnpjUnique = ( $cnpjUnique == null ) ? 0 : $cnpjUnique;
 			$classAttribute->setAttribute( 'data_int1', $allow );
 			$classAttribute->setAttribute( 'data_int2', $cpfUnique );
 			$classAttribute->setAttribute( 'data_int3', $cnpjUnique );

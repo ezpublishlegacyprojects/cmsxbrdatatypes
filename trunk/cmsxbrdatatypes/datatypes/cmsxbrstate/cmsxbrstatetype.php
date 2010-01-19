@@ -113,14 +113,18 @@ class cmsxBrStateType extends eZDataType
     function fetchClassAttributeHTTPInput( $http, $base, $classAttribute )
     {
         $classAttributeID = $classAttribute->attribute( 'id' );
-        if ( $http->hasPostVariable( 'ApplyButton' ) ||
-             $http->hasPostVariable( 'StoreButton' ) )
+        if ( $http->hasPostVariable( $base . '_brstate_post_' . $classAttributeID ) )
         {
-            $valid = $http->postVariable( $base . '_brstate_valid_' . $classAttributeID );
-			$names = $http->postVariable( $base . '_brstate_names_' . $classAttributeID );
-			// correct nulled values
-			$valid = ( $valid == null ) ? 0 : $valid;
-			$names = ( $names == null ) ? 0 : $names;
+        	$valid = 0;
+        	if ( $http->hasPostVariable( $base . '_brstate_valid_' . $classAttributeID ) )
+			{
+				$valid = $http->postVariable( $base . '_brstate_valid_' . $classAttributeID );
+			}
+            $names = 0;
+        	if ( $http->hasPostVariable( $base . '_brstate_names_' . $classAttributeID ) )
+			{
+				$names = $http->postVariable( $base . '_brstate_names_' . $classAttributeID );
+			}
 			$classAttribute->setAttribute( 'data_int1', $valid );
 			$classAttribute->setAttribute( 'data_int2', $names );
 			$classAttribute->store(); 	
