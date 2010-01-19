@@ -64,6 +64,52 @@ class cmsxBrStateType extends eZDataType
     {
         return $contentObjectAttribute->attribute( "data_text" );
     }
+    /**
+     * Validate information collector
+     */
+    function validateCollectionAttributeHTTPInput( $http, $base, $contentObjectAttribute )
+    {
+    	if ( $http->hasPostVariable( $base . '_data_brstate_' . $contentObjectAttribute->attribute( 'id' ) ) )
+        {
+			$contentClass = $contentObjectAttribute->contentClassAttribute();
+			$valid = $contentClass->attribute( 'data_int1' );
+
+           	$state = trim( $http->postVariable( $base . '_data_brstate_' . $contentObjectAttribute->attribute( 'id' ) ) );
+            if ( $state == '' && $contentObjectAttribute->validateIsRequired() )
+            {
+            	$contentObjectAttribute->setValidationError( 
+            	    ezi18n( 'extension/brdatatypes/brstate/content/datatype', 'State is mandatory' ) );
+				return eZInputValidator::STATE_INVALID;
+            }
+            $isValid = self::isBrState( $state, $valid );
+            if ( $state != '' && !$isValid )
+            {
+            	$contentObjectAttribute->setValidationError( 
+            	    ezi18n( 'extension/brdatatypes/brstate/content/datatype', 'Invalid State' ) );
+				return eZInputValidator::STATE_INVALID;
+            }
+            return eZInputValidator::STATE_ACCEPTED;
+        }
+        elseif ( $contentObjectAttribute->validateIsRequired() )
+        {
+            $contentObjectAttribute->setValidationError( 
+                ezi18n( 'extension/brdatatypes/brstate/content/datatype', 'State is mandatory' ) );
+			return eZInputValidator::STATE_INVALID;
+        }
+    }
+    /** 
+     * Fetches the http post variables for collected information
+     */
+    function fetchCollectionAttributeHTTPInput( $collection, $collectionAttribute, $http, $base, $contentObjectAttribute )
+    {
+        if ( $http->hasPostVariable( $base . '_data_brstate_' . $contentObjectAttribute->attribute( 'id' ) ) )
+        {
+        	$state = $http->postVariable( $base . '_data_brstate_' . $contentObjectAttribute->attribute( 'id' ) );
+        	$collectionAttribute->setAttribute( 'data_text', $state );
+        	return true;
+        }
+        return false;
+    }
     function fetchClassAttributeHTTPInput( $http, $base, $classAttribute )
     {
         $classAttributeID = $classAttribute->attribute( 'id' );
@@ -81,7 +127,14 @@ class cmsxBrStateType extends eZDataType
         }
         return true;
     }
-  
+    function isIndexable()
+    {
+        return true;
+    }
+    function isInformationCollector()
+    {
+        return true;
+    }
     function metaData( $contentObjectAttribute )
     {
         return $contentObjectAttribute->attribute( "data_text" );
@@ -94,7 +147,7 @@ class cmsxBrStateType extends eZDataType
 
     function hasObjectAttributeContent( $contentObjectAttribute )
     {
-        return true;
+        return trim( $contentObjectAttribute->attribute( "data_text" ) ) != '';
     }
     
     function sortKey( $contentObjectAttribute )
