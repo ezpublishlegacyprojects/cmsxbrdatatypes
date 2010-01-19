@@ -123,6 +123,101 @@ class cmsxCpfCnpjType extends eZDataType
     {
         return $contentObjectAttribute->attribute( "data_text" );
     }
+    /**
+     * Validate information collector
+     */
+    function validateCollectionAttributeHTTPInput( $http, $base, $contentObjectAttribute )
+    {
+    	if ( $http->hasPostVariable( $base . '_data_cpfcnpj_num_' . $contentObjectAttribute->attribute( 'id' ) ) )
+        {
+			$contentClass = $contentObjectAttribute->contentClassAttribute();
+			$allowedTypes = $contentClass->attribute( 'data_int1' );
+			if ( $allowedTypes == self::TYPE_BOTH )
+			{
+				if ( !$http->hasPostVariable( $base . '_data_cpfcnpj_type_' . $contentObjectAttribute->attribute( 'id' ) ) )
+				{
+					$contentObjectAttribute->setValidationError( 
+				        ezi18n( 'extension/brdatatypes/cpfcnpj/content/datatype', 'The type (CPF or CNPJ) is mandatory' ) );
+			        return eZInputValidator::STATE_INVALID;	
+				}
+				$type = $http->postVariable( $base . '_data_cpfcnpj_type_' . $contentObjectAttribute->attribute( 'id' ) );
+			}
+            else
+            {
+            	$type = ( $allowedTypes == self::TYPE_CPF ) ? self::TYPE_CPF : self::TYPE_CNPJ; 
+            }
+           	$num = self::cleanNum( $http->postVariable( $base . '_data_cpfcnpj_num_' . $contentObjectAttribute->attribute( 'id' ) ) );
+            if ( $type == self::TYPE_CNPJ )
+            {
+            	if ( $num == '' && $contentObjectAttribute->validateIsRequired() )
+            	{
+            		$contentObjectAttribute->setValidationError( 
+            		    ezi18n( 'extension/brdatatypes/cpfcnpj/content/datatype', 'CNPJ is mandatory' ) );
+					return eZInputValidator::STATE_INVALID;
+            	}
+            	$isValid = self::isCNPJ( $num );
+            	if ( $num != '' && !$isValid )
+            	{
+            		$contentObjectAttribute->setValidationError(  
+            		    ezi18n( 'extension/brdatatypes/cpfcnpj/content/datatype', 'Invalid CNPJ' ) );
+					return eZInputValidator::STATE_INVALID;
+            	}
+            }
+            else
+            {
+                if ( $num == '' && $contentObjectAttribute->validateIsRequired() )
+            	{
+            		$contentObjectAttribute->setValidationError(  
+            		    ezi18n( 'extension/brdatatypes/cpfcnpj/content/datatype', 'CPF is mandatory' )  );
+					return eZInputValidator::STATE_INVALID;
+            	}
+            	$isValid = self::isCPF( $num );
+            	if ( $num != '' && !$isValid )
+            	{
+            		$contentObjectAttribute->setValidationError(   
+            		    ezi18n( 'extension/brdatatypes/cpfcnpj/content/datatype', 'Invalid CPF' )  );
+					return eZInputValidator::STATE_INVALID;
+            	}    	
+            }
+            return eZInputValidator::STATE_ACCEPTED;
+        }
+        elseif ( $contentObjectAttribute->validateIsRequired() )
+        {
+        	$contentObjectAttribute->setValidationError(    
+            ezi18n( 'extension/brdatatypes/cpfcnpj/content/datatype', 'The CPF or CNPJ is mandatory' ) );
+        	return eZInputValidator::STATE_INVALID;
+        }
+        return eZInputValidator::STATE_ACCEPTED;
+    }
+    /** 
+     * Fetches the http post variables for collected information
+     */
+    function fetchCollectionAttributeHTTPInput( $collection, $collectionAttribute, $http, $base, $contentObjectAttribute )
+    {
+    	if ( $http->hasPostVariable( $base . '_data_cpfcnpj_num_' . $contentObjectAttribute->attribute( 'id' ) ) )
+        {
+        	$contentClass = $contentObjectAttribute->contentClassAttribute();
+			$allowedTypes = $contentClass->attribute( 'data_int1' );
+			if ( $allowedTypes == self::TYPE_BOTH )
+			{
+				$type = $http->postVariable( $base . '_data_cpfcnpj_type_' . $contentObjectAttribute->attribute( 'id' ) );
+				if ( !$http->hasPostVariable( $base . '_data_cpfcnpj_type_' . $contentObjectAttribute->attribute( 'id' ) ) )
+				{
+					$type = ( $contentClass->attribute( 'data_int4' ) == self::TYPE_CPF ) ? self::TYPE_CPF : self::TYPE_CNPJ;
+				}
+				
+			}
+            else
+            {
+            	$type = ( $allowedTypes == self::TYPE_CPF ) ? self::TYPE_CPF : self::TYPE_CNPJ; 
+            }
+        	$num = $http->postVariable( $base . '_data_cpfcnpj_num_' . $contentObjectAttribute->attribute( 'id' ) );
+        	$collectionAttribute->setAttribute( 'data_int', self::cleanNum( $type ) );
+        	$collectionAttribute->setAttribute( 'data_text', self::cleanNum( $num ) );
+        	return true;
+        }
+        return false;
+    }    
     function fetchClassAttributeHTTPInput( $http, $base, $classAttribute )
     {
         $classAttributeID = $classAttribute->attribute( 'id' );
@@ -144,7 +239,14 @@ class cmsxCpfCnpjType extends eZDataType
         }
         return true;
     }
-  
+    function isIndexable()
+    {
+        return true;
+    }
+    function isInformationCollector()
+    {
+        return true;
+    }  
     function metaData( $contentObjectAttribute )
     {
         return $contentObjectAttribute->attribute( "data_text" );
@@ -158,7 +260,7 @@ class cmsxCpfCnpjType extends eZDataType
 
     function hasObjectAttributeContent( $contentObjectAttribute )
     {
-        return true;
+        return trim( $contentObjectAttribute->attribute( "data_text" ) ) != '';
     }
    /**
     * Sets the default value.

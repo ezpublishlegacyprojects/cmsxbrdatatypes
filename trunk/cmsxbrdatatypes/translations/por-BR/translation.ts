@@ -9,7 +9,7 @@
     <message>
         <source>Brazilian state</source>
         <comment>Datatype name</comment>
-        <translation>Estados brasileiro</translation>
+        <translation>Estado brasileiro</translation>
     </message>
 </context>
 <context>
