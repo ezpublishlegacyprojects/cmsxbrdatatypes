@@ -28,7 +28,8 @@ class cmsxCpfCnpjType extends eZDataType
 			$allowedTypes = $contentClass->attribute( 'data_int1' );
 			if ( $allowedTypes == self::TYPE_BOTH )
 			{
-				if ( !$http->hasPostVariable( $base . '_data_cpfcnpj_type_' . $contentObjectAttribute->attribute( 'id' ) ) )
+				if ( !$classAttribute->attribute( 'is_information_collector' ) && 
+				     !$http->hasPostVariable( $base . '_data_cpfcnpj_type_' . $contentObjectAttribute->attribute( 'id' ) ) )
 				{
 					$contentObjectAttribute->setValidationError( 
 				        ezi18n( 'extension/brdatatypes/cpfcnpj/content/datatype', 'The type (CPF or CNPJ) is mandatory' ) );
@@ -43,7 +44,8 @@ class cmsxCpfCnpjType extends eZDataType
            	$num = self::cleanNum( $http->postVariable( $base . '_data_cpfcnpj_num_' . $contentObjectAttribute->attribute( 'id' ) ) );
             if ( $type == self::TYPE_CNPJ )
             {
-            	if ( $num == '' && $contentObjectAttribute->validateIsRequired() )
+            	if ( $num == '' && !$classAttribute->attribute( 'is_information_collector' ) &&
+ 					 $contentObjectAttribute->validateIsRequired() )
             	{
             		$contentObjectAttribute->setValidationError( 
             		    ezi18n( 'extension/brdatatypes/cpfcnpj/content/datatype', 'CNPJ is mandatory' ) );
@@ -65,7 +67,8 @@ class cmsxCpfCnpjType extends eZDataType
             }
             else
             {
-                if ( $num == '' && $contentObjectAttribute->validateIsRequired() )
+                if ( $num == '' && !$classAttribute->attribute( 'is_information_collector' ) &&
+                     $contentObjectAttribute->validateIsRequired() )
             	{
             		$contentObjectAttribute->setValidationError(  
             		    ezi18n( 'extension/brdatatypes/cpfcnpj/content/datatype', 'CPF is mandatory' )  );

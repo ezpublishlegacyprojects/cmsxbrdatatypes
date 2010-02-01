@@ -24,14 +24,14 @@ class cmsxBrPhoneType extends eZDataType
         {
 			$contentClass = $contentObjectAttribute->contentClassAttribute();
            	$phone = trim( $http->postVariable( $base . '_data_brphone_' . $contentObjectAttribute->attribute( 'id' ) ) );
-            if ( $phone == '' && $contentObjectAttribute->validateIsRequired() )
+            if ( $phone == '' && !$classAttribute->attribute( 'is_information_collector' ) &&
+                 $contentObjectAttribute->validateIsRequired() )
             {
             	$contentObjectAttribute->setValidationError( 
             	    ezi18n( 'extension/brdatatypes/brphone/content/datatype', 'Phone number is mandatory' ) );
 				return eZInputValidator::STATE_INVALID;
             }
             $requireArea = $contentClass->attribute( 'data_int1' );
-            var_dump( self::isPhoneNumber( $phone, true ) );
             if ( $phone != '' && $requireArea && !self::isPhoneNumber( $phone, true ) )
             {
             	$contentObjectAttribute->setValidationError( 

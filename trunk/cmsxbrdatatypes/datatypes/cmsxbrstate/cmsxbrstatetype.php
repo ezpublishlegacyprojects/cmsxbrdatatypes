@@ -25,7 +25,8 @@ class cmsxBrStateType extends eZDataType
 			$valid = $contentClass->attribute( 'data_int1' );
 
            	$state = trim( $http->postVariable( $base . '_data_brstate_' . $contentObjectAttribute->attribute( 'id' ) ) );
-            if ( $state == '' && $contentObjectAttribute->validateIsRequired() )
+            if ( $state == '' && !$classAttribute->attribute( 'is_information_collector' ) && 			 
+                 $contentObjectAttribute->validateIsRequired() )
             {
             	$contentObjectAttribute->setValidationError( 
             	    ezi18n( 'extension/brdatatypes/brstate/content/datatype', 'State is mandatory' ) );
