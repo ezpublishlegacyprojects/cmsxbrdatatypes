@@ -24,8 +24,7 @@ class cmsxBrPhoneType extends eZDataType
         {
 			$contentClass = $contentObjectAttribute->contentClassAttribute();
            	$phone = trim( $http->postVariable( $base . '_data_brphone_' . $contentObjectAttribute->attribute( 'id' ) ) );
-            if ( $phone == '' && !$classAttribute->attribute( 'is_information_collector' ) &&
-                 $contentObjectAttribute->validateIsRequired() )
+            if ( $phone == '' && $contentObjectAttribute->validateIsRequired() )
             {
             	$contentObjectAttribute->setValidationError( 
             	    ezi18n( 'extension/brdatatypes/brphone/content/datatype', 'Phone number is mandatory' ) );
