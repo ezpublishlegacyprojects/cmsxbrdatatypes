@@ -416,6 +416,18 @@ class cmsxCpfCnpjType extends eZDataType
       $result = $db->arrayQuery( $sql, array(), false );
       return ( count( $result ) == 0 );
     }
+    function toString( $contentObjectAttribute )
+    {
+        return $contentObjectAttribute->attribute( 'data_text' );
+    }
+
+    function fromString( $contentObjectAttribute, $string )
+    {
+    	$string = self::cleanNum( $string );
+        $type = self::isCNPJ( $string ) ? self::TYPE_PJ : self::TYPE_PF;
+        $contentObjectAttribute->setAttribute( 'data_int', $type );
+        return $contentObjectAttribute->setAttribute( 'data_text', $string );
+    }    
 }
 
 eZDataType::register( cmsxCpfCnpjType::DATA_TYPE_STRING, 'cmsxCpfCnpjType' );
