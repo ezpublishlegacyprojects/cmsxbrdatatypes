@@ -18,13 +18,14 @@ class cmsxBrPhoneType extends eZDataType
                                      'object_serialize_map' => array( 'data_text' => 'brphone' ) ) );
     }
 
-    function validateObjectAttributeHTTPInput( $http, $base, $contentObjectAttribute )
+    function validateObjectAttributeHTTPInput( $http, $base, $contentObjectAttribute, $infoCollector = false )
     {
         if ( $http->hasPostVariable( $base . '_data_brphone_' . $contentObjectAttribute->attribute( 'id' ) ) )
         {
 			$contentClass = $contentObjectAttribute->contentClassAttribute();
            	$phone = trim( $http->postVariable( $base . '_data_brphone_' . $contentObjectAttribute->attribute( 'id' ) ) );
-            if ( $phone == '' && $contentObjectAttribute->validateIsRequired() )
+            if ( $phone == '' && $contentObjectAttribute->validateIsRequired() && 
+                 ( !$contentObjectAttribute->attribute( 'is_information_collector' ) || $infoCollector ) )
             {
             	$contentObjectAttribute->setValidationError( 
             	    ezi18n( 'extension/brdatatypes/brphone/content/datatype', 'Phone number is mandatory' ) );
@@ -74,7 +75,7 @@ class cmsxBrPhoneType extends eZDataType
      */
     function validateCollectionAttributeHTTPInput( $http, $base, $contentObjectAttribute )
     {
-    	return $this->validateObjectAttributeHTTPInput( $http, $base, $contentObjectAttribute );
+    	return $this->validateObjectAttributeHTTPInput( $http, $base, $contentObjectAttribute, true );
     }
     /** 
      * Fetches the http post variables for collected information

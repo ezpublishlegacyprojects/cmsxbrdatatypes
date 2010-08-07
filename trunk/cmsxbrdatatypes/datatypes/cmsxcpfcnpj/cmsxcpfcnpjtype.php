@@ -28,7 +28,7 @@ class cmsxCpfCnpjType extends eZDataType
 			$allowedTypes = $contentClass->attribute( 'data_int1' );
 			if ( $allowedTypes == self::TYPE_BOTH )
 			{
-				if ( !$classAttribute->attribute( 'is_information_collector' ) && 
+				if ( !$contentObjectAttribute->attribute( 'is_information_collector' ) && 
 				     !$http->hasPostVariable( $base . '_data_cpfcnpj_type_' . $contentObjectAttribute->attribute( 'id' ) ) )
 				{
 					$contentObjectAttribute->setValidationError( 
